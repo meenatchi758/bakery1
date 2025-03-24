@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sweet Cake Shop</title>
+    <link rel="stylesheet" href="cart.css">
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav>
+        <h1>Sweet Cake Shop</h1>
+        <a href="#" id="cart-link">🛒 Cart (<span id="cart-count">0</span>)</a>
+    </nav>
+
+    <!-- Shopping Cart Section -->
+    <h2>Your Cart</h2>
+    <div id="cart-items"></div>
+    <p id="total-price">Total: ₹0.00</p>
+    <button id="clear-cart">Clear Cart</button>
+    <a href="checkout.html"><button>Proceed to Checkout</button></a>
+
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+            function updateCartDisplay() {
+                const cartContainer = document.getElementById("cart-items");
+                const totalPriceElement = document.getElementById("total-price");
+                const cartCount = document.getElementById("cart-count");
+                
+                cartContainer.innerHTML = "";
+                let total = 0;
+                let itemCount = 0;
+                
+                if (cart.length === 0) {
+                    cartContainer.innerHTML = "<p>Your cart is empty.</p>";
+                    totalPriceElement.textContent = "Total: ₹0.00";
+                    cartCount.textContent = "0";
+                    return;
+                }
+
+                cart.forEach((item, index) => {
+                    total += item.price * item.quantity;
+                    itemCount += item.quantity;
+
+                    const cartItem = document.createElement("div");
+                    cartItem.classList.add("cart-item");
+                    cartItem.innerHTML = `
+                        <img src="${item.image}" alt="${item.name}" width="80">
+                        <p>${item.name} - ₹${item.price} x <span class="quantity">${item.quantity}</span></p>
+                        <button class="decrease-qty" data-index="${index}">➖</button>
+                        <button class="increase-qty" data-index="${index}">➕</button>
+                        <button class="remove-item" data-index="${index}">❌ Remove</button>
+                    `;
+                    cartContainer.appendChild(cartItem);
+                });
+
+                totalPriceElement.textContent = `Total: ₹${total.toFixed(2)}`;
+                cartCount.textContent = itemCount;
+
+                // Attach event listeners to new elements
+                document.querySelectorAll(".decrease-qty").forEach(button => {
+                    button.addEventListener("click", () => changeQuantity(button.dataset.index, -1));
+                });
+
+                document.querySelectorAll(".increase-qty").forEach(button => {
+                    button.addEventListener("click", () => changeQuantity(button.dataset.index, 1));
+                });
+
+                document.querySelectorAll(".remove-item").forEach(button => {
+                    button.addEventListener("click", () => removeFromCart(button.dataset.index));
+                });
+            }
+
+            window.addToCart = function (product) {
+                let existingItem = cart.find(item => item.name === product.name);
+                if (existingItem) {
+                    existingItem.quantity++;
+                } else {
+                    cart.push(product);
+                }
+                localStorage.setItem("cart", JSON.stringify(cart));
+                updateCartDisplay();
+            };
+
+            window.removeFromCart = function (index) {
+                cart.splice(index, 1);
+                localStorage.setItem("cart", JSON.stringify(cart));
+                updateCartDisplay();
+            };
+
+            window.changeQuantity = function (index, amount) {
+                index = parseInt(index);
+                if (cart[index].quantity + amount > 0) {
+                    cart[index].quantity += amount;
+                } else {
+                    cart.splice(index, 1);
+                }
+                localStorage.setItem("cart", JSON.stringify(cart));
+                updateCartDisplay();
+            };
+
+            document.querySelectorAll(".add-to-cart").forEach(button => {
+                button.addEventListener("click", (e) => {
+                    const productCard = e.target.closest(".product-card");
+                    if (productCard) {
+                        const product = {
+                            name: productCard.dataset.name,
+                            price: parseFloat(productCard.dataset.price),
+                            quantity: 1,
+                            image: productCard.dataset.image
+                        };
+                        addToCart(product);
+                        alert(`${product.name} added to cart`);
+                    }
+                });
+            });
+
+            document.getElementById("clear-cart").addEventListener("click", () => {
+                localStorage.removeItem("cart");
+                cart = [];
+                updateCartDisplay();
+            });
+
+            updateCartDisplay();
+        });
+    </script>
+
+</body>
+</html>
