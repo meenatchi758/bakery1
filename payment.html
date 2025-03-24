@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Options</title>
+    <link rel="stylesheet" href="payment.css">
+    <!-- <script defer src="script.js"></script> -->
+</head>
+<body>
+    <div class="payment-container">
+        <!-- Left Side: Payment Options -->
+        <div class="payment-options">
+            <h2>Payment Options:</h2>
+            <label class="payment-method">
+                <input type="radio" name="payment" value="upi">
+                <img src="./images/1763566.webp" alt="UPI"> Pay by any UPI App
+            </label>
+
+            <label class="payment-method">
+                <input type="radio" name="payment" value="wallet">
+                <img src="./images/OIP (1).jpg" alt="Wallet"> Wallet
+            </label>
+
+            <label class="payment-method">
+                <input type="radio" name="payment" value="card">
+                <img src="./images/OIP (2).jpg" alt="Card"> Debit/Credit Cards
+            </label>
+
+            <label class="payment-method">
+                <input type="radio" name="payment" value="netbanking">
+                <img src="./images/Feature-min.jpg" alt="Net Banking"> Net Banking
+            </label>
+
+            <label class="payment-method">
+                <input type="radio" name="payment" value="cod">
+                <img src="./images/How-does-Cash-on-Delivery-Work.jpg" alt="Cash on Delivery"> Cash on Delivery
+            </label>
+        </div>
+       
+
+        <!-- Right Side: Secure Payment Image & Buttons -->
+        <div class="secure-payment">
+            <img src="./images/secure-payment-landing-page_23-2148534821.avif" alt="Secure Payment">
+            <div class="button-container">
+                <button id="placeOrder">Pay</button>
+                <button id="cancelOrder">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const placeOrderBtn = document.getElementById("placeOrder");
+            const cancelOrderBtn = document.getElementById("cancelOrder");
+    
+            placeOrderBtn.addEventListener("click", () => {
+                const selectedPayment = document.querySelector('input[name="payment"]:checked');
+                if (selectedPayment) {
+                    alert(`Order placed successfully using ${selectedPayment.value}!`);
+                    window.location.href = "cakes.html"; // Redirect to cakes.html
+                } else {
+                    alert("Please select a payment method before placing the order.");
+                }
+            });
+    
+            cancelOrderBtn.addEventListener("click", () => {
+                alert("Order cancelled.");
+            });
+        });
+    </script>
+    
+    
+
+</body>
+</html>
